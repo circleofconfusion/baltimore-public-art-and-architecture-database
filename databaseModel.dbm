@@ -1,0 +1,855 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="0.9.2" author="Shane Knudsen" last-position="0,0" last-zoom="0.8" max-obj-count="43"
+	 default-schema="public" default-owner="postgres">
+<database name="baltimore_street_art" is-template="false" allow-conns="true">
+</database>
+
+<schema name="public" layer="0" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<table name="person" layer="0" collapse-mode="2" max-obj-count="18">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1100" y="600"/>
+	<column name="id" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="firstName">
+		<type name="varchar" length="64"/>
+	</column>
+	<column name="middleName">
+		<type name="varchar" length="128"/>
+	</column>
+	<column name="lastName">
+		<type name="varchar" length="64"/>
+	</column>
+	<column name="email">
+		<type name="varchar" length="128"/>
+	</column>
+	<column name="imageUrl">
+		<type name="varchar" length="512"/>
+	</column>
+	<column name="birthDate">
+		<type name="date" length="0"/>
+	</column>
+	<column name="birthplaceId">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="deathDate">
+		<type name="date" length="0"/>
+	</column>
+	<column name="deathplaceId">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="username">
+		<type name="varchar" length="32"/>
+	</column>
+	<column name="bio">
+		<type name="text" length="0"/>
+	</column>
+	<column name="website">
+		<type name="varchar" length="512"/>
+	</column>
+	<column name="updated" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="updatedBy">
+		<type name="integer" length="0"/>
+	</column>
+	<constraint name="person_pk" type="pk-constr" table="public.person">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="following" layer="0" collapse-mode="2" max-obj-count="3">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1140" y="1040"/>
+	<column name="followerId" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="followingId" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<constraint name="following_pk" type="pk-constr" table="public.following">
+		<columns names="followerId,followingId" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="artwork" layer="0" collapse-mode="2" max-obj-count="9">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="680" y="340"/>
+	<column name="id" not-null="true"
+	 identity-type="ALWAYS">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="title" not-null="true">
+		<type name="varchar" length="128"/>
+	</column>
+	<column name="description">
+		<type name="text" length="0"/>
+	</column>
+	<column name="statement">
+		<type name="text" length="0"/>
+		<comment><![CDATA[Artist's statement]]></comment>
+	</column>
+	<column name="location" not-null="true">
+		<type name="point" length="0"/>
+		<comment><![CDATA[Lat/Lon of artwork]]></comment>
+	</column>
+	<column name="installationDate">
+		<type name="date" length="0"/>
+	</column>
+	<column name="updated" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="updatedBy" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<constraint name="artwork_pk" type="pk-constr" table="public.artwork">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="artwork_star" layer="0" collapse-mode="2" max-obj-count="3">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1300" y="300"/>
+	<column name="personId" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="artworkId" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="timestamp" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="artwork_star_pk" type="pk-constr" table="public.artwork_star">
+		<columns names="personId,artworkId" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<usertype name="flag_type" configuration="enumeration">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<enumeration values="new,offensive,off_topic,incorrect,spam,not_public,dead_link,removed"/>
+</usertype>
+
+<table name="artwork_image" layer="0" collapse-mode="2" max-obj-count="6">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<comment><![CDATA[Images associated with artwork]]></comment>
+	<position x="680" y="40"/>
+	<column name="id" not-null="true"
+	 identity-type="ALWAYS">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="artworkId" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="imageUrl">
+		<type name="varchar" length="512"/>
+	</column>
+	<column name="timestamp" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="uploadedBy" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<constraint name="artwork_image_pk" type="pk-constr" table="public.artwork_image">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="tour" layer="0" collapse-mode="2" max-obj-count="7">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="40" y="720"/>
+	<column name="id" not-null="true"
+	 identity-type="ALWAYS">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="title" not-null="true">
+		<type name="varchar" length="128"/>
+		<comment><![CDATA[Title of the tour]]></comment>
+	</column>
+	<column name="description">
+		<type name="text" length="0"/>
+	</column>
+	<column name="createdById" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="updated" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="updatedBy" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<constraint name="tour_pk" type="pk-constr" table="public.tour">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="tour_artwork" layer="0" collapse-mode="2" max-obj-count="3">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="280" y="280"/>
+	<column name="tourId" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="artworkId" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="order">
+		<type name="integer" length="0"/>
+	</column>
+	<constraint name="tour_artwork_pk" type="pk-constr" table="public.tour_artwork">
+		<columns names="tourId,artworkId" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="artist_artwork" layer="0" collapse-mode="2" max-obj-count="3">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="680" y="660"/>
+	<column name="artistId" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="artworkId" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<constraint name="artist_artwork_pk" type="pk-constr" table="public.artist_artwork">
+		<columns names="artistId,artworkId" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="artwork_article" layer="0" collapse-mode="2" max-obj-count="7">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1100" y="60"/>
+	<column name="id" not-null="true"
+	 identity-type="ALWAYS">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="artworkId" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="articleUrl">
+		<type name="varchar" length="512"/>
+	</column>
+	<column name="article_title">
+		<type name="varchar" length="256"/>
+	</column>
+	<column name="timestamp" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="updatedBy" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<constraint name="artwork_article_pk" type="pk-constr" table="public.artwork_article">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="tag" layer="0" collapse-mode="2" max-obj-count="1">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="20" y="500"/>
+	<column name="tag" not-null="true">
+		<type name="varchar" length="64"/>
+	</column>
+	<constraint name="tag_pk" type="pk-constr" table="public.tag">
+		<columns names="tag" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="artwork_tag" layer="0" collapse-mode="2" pagination="true" attribs-page="0" ext-attribs-page="0" max-obj-count="3">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="320" y="500"/>
+	<column name="artworkId" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="tag" not-null="true">
+		<type name="varchar" length="64"/>
+	</column>
+	<constraint name="artwork_tag_pk" type="pk-constr" table="public.artwork_tag">
+		<columns names="artworkId,tag" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<usertype name="adjudication" configuration="enumeration">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<enumeration values="remove,keep"/>
+</usertype>
+
+<table name="flag" layer="0" collapse-mode="2" max-obj-count="8">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1840" y="740"/>
+	<column name="id" not-null="true"
+	 identity-type="ALWAYS">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="flagTimestamp" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="comment">
+		<type name="varchar" length="1024"/>
+	</column>
+	<column name="flaggedBy" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="reviewedBy">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="reviewTimestamp">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="review_adjudication">
+		<type name="public.adjudication" length="0"/>
+	</column>
+	<constraint name="flag_pk" type="pk-constr" table="public.flag">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="artwork_article_flag" layer="0" collapse-mode="2" max-obj-count="3">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1820" y="320"/>
+	<column name="flagId" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="artworkArticleId" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<constraint name="artwork_article_flag_pk" type="pk-constr" table="public.artwork_article_flag">
+		<columns names="flagId,artworkArticleId" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="artwork_image_flag" layer="0" collapse-mode="2" max-obj-count="3">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1740" y="40"/>
+	<column name="flagId" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="artworkImageId" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<constraint name="artwork_image_flag_pk" type="pk-constr" table="public.artwork_image_flag">
+		<columns names="flagId,artworkImageId" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="artwork_flag" layer="0" collapse-mode="2" max-obj-count="3">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1520" y="500"/>
+	<column name="flagId" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="artworkId" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<constraint name="artwork_flag_pk" type="pk-constr" table="public.artwork_flag">
+		<columns names="flagId,artworkId" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="person_flag" layer="0" collapse-mode="2" max-obj-count="3">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1420" y="980"/>
+	<column name="flagId" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="personId" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<constraint name="person_flag_pk" type="pk-constr" table="public.person_flag">
+		<columns names="flagId,personId" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="artist_artwork_flag" layer="0" collapse-mode="2" max-obj-count="3">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="680" y="960"/>
+	<column name="flagId" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="artistId" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="artworkId" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<constraint name="artist_artwork_flag_pk" type="pk-constr" table="public.artist_artwork_flag">
+		<columns names="flagId,artistId,artworkId" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="tour_flag" layer="0" collapse-mode="2" max-obj-count="3">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="380" y="1000"/>
+	<column name="flagId" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="tourId" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<constraint name="tour_flag_pk" type="pk-constr" table="public.tour_flag">
+		<columns names="flagId,tourId" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="tag_flag" layer="0" collapse-mode="2" max-obj-count="3">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="140" y="80"/>
+	<column name="flagId" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="tag" not-null="true">
+		<type name="varchar" length="64"/>
+	</column>
+	<constraint name="tag_flag_pk" type="pk-constr" table="public.tag_flag">
+		<columns names="flagId,tag" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="artwork_tag_flag" layer="0" collapse-mode="2" max-obj-count="3">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="340" y="800"/>
+	<column name="flagId" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="artworkId" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="tag" not-null="true">
+		<type name="varchar" length="64"/>
+	</column>
+	<constraint name="artwork_tag_flag_pk" type="pk-constr" table="public.artwork_tag_flag">
+		<columns names="flagId,artworkId,tag" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<constraint name="person_updatedBy_ref" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.person" table="public.person">
+	<columns names="updatedBy" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="follower_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.person" table="public.following">
+	<columns names="followerId" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="following_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.person" table="public.following">
+	<columns names="followingId" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="updated_by_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.person" table="public.artwork">
+	<columns names="updatedBy" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+		<comment><![CDATA[Person ID of the person who last updated this entry]]></comment>
+</constraint>
+
+<constraint name="star_personId_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.person" table="public.artwork_star">
+	<columns names="personId" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="star_artworkId_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.artwork" table="public.artwork_star">
+	<columns names="artworkId" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="image_artwork_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.artwork" table="public.artwork_image">
+	<columns names="artworkId" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="artwork_image_uploadedBy_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.person" table="public.artwork_image">
+	<columns names="uploadedBy" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="tour_personId_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.person" table="public.tour">
+	<columns names="createdById" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="tour_updatedBy_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.person" table="public.tour">
+	<columns names="updatedBy" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="tour_artwork_tourId_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.tour" table="public.tour_artwork">
+	<columns names="tourId" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="tour_artwork_artworkId_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.artwork" table="public.tour_artwork">
+	<columns names="artworkId" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="artist_artwork_artistId_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.person" table="public.artist_artwork">
+	<columns names="artistId" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="artist_artwork_artworkId_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.artwork" table="public.artist_artwork">
+	<columns names="artworkId" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="artwork_article_updatedBy_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.person" table="public.artwork_article">
+	<columns names="updatedBy" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="artwork_article_artworkId_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.artwork" table="public.artwork_article">
+	<columns names="artworkId" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="artwork_tag_artworkId_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.artwork" table="public.artwork_tag">
+	<columns names="artworkId" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="artwork_tag_tagId_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.tag" table="public.artwork_tag">
+	<columns names="tag" ref-type="src-columns"/>
+	<columns names="tag" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="flag_flaggedBy_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.person" table="public.flag">
+	<columns names="flaggedBy" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="flag_reviewedBy_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.person" table="public.flag">
+	<columns names="reviewedBy" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="artwork_article_flag_artworkArticleId_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.artwork_article" table="public.artwork_article_flag">
+	<columns names="artworkArticleId" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="artwork_article_flag_flagId_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.flag" table="public.artwork_article_flag">
+	<columns names="flagId" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="artwork_image_flag_flagId_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.flag" table="public.artwork_image_flag">
+	<columns names="flagId" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="artwork_image_flag_artworkImageId_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.artwork_image" table="public.artwork_image_flag">
+	<columns names="artworkImageId" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="artwork_flag_flagId_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.flag" table="public.artwork_flag">
+	<columns names="flagId" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="artwork_flag_artworkId_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.artwork" table="public.artwork_flag">
+	<columns names="artworkId" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="person_flag_flagId_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.flag" table="public.person_flag">
+	<columns names="flagId" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="person_flag_personId_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.person" table="public.person_flag">
+	<columns names="personId" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="artist_artwork_flag_flagId_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.flag" table="public.artist_artwork_flag">
+	<columns names="flagId" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="artist_artwork_flag_artistArtworkId_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.artist_artwork" table="public.artist_artwork_flag">
+	<columns names="artistId,artworkId" ref-type="src-columns"/>
+	<columns names="artistId,artworkId" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="tour_flag_flagId_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.flag" table="public.tour_flag">
+	<columns names="flagId" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="tour_flag_tourId_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.tour" table="public.tour_flag">
+	<columns names="tourId" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="tag_flag_flagId_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.flag" table="public.tag_flag">
+	<columns names="flagId" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="tag_flag_tag_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.tag" table="public.tag_flag">
+	<columns names="tag" ref-type="src-columns"/>
+	<columns names="tag" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="artwork_tag_flag_artworkTag_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.artwork_tag" table="public.artwork_tag_flag">
+	<columns names="artworkId,tag" ref-type="src-columns"/>
+	<columns names="artworkId,tag" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="artwork_tag_flag_flagId_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.flag" table="public.artwork_tag_flag">
+	<columns names="flagId" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<relationship name="rel_following_person" type="relfk" layer="0"
+	 src-table="public.following"
+	 dst-table="public.person" reference-fk="follower_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_following_person1" type="relfk" layer="0"
+	 src-table="public.following"
+	 dst-table="public.person" reference-fk="following_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_artwork_person1" type="relfk" layer="0"
+	 src-table="public.artwork"
+	 dst-table="public.person" reference-fk="updated_by_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_artwork_star_person" type="relfk" layer="0"
+	 src-table="public.artwork_star"
+	 dst-table="public.person" reference-fk="star_personId_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_artwork_star_artwork" type="relfk" layer="0"
+	 src-table="public.artwork_star"
+	 dst-table="public.artwork" reference-fk="star_artworkId_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_artwork_image_artwork" type="relfk" layer="0"
+	 src-table="public.artwork_image"
+	 dst-table="public.artwork" reference-fk="image_artwork_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_tour_person" type="relfk" layer="0"
+	 src-table="public.tour"
+	 dst-table="public.person" reference-fk="tour_personId_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_tour_artwork_tour" type="relfk" layer="0"
+	 src-table="public.tour_artwork"
+	 dst-table="public.tour" reference-fk="tour_artwork_tourId_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_tour_artwork_artwork" type="relfk" layer="0"
+	 src-table="public.tour_artwork"
+	 dst-table="public.artwork" reference-fk="tour_artwork_artworkId_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_artist_artwork_person" type="relfk" layer="0"
+	 src-table="public.artist_artwork"
+	 dst-table="public.person" reference-fk="artist_artwork_artistId_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_artist_artwork_artwork" type="relfk" layer="0"
+	 src-table="public.artist_artwork"
+	 dst-table="public.artwork" reference-fk="artist_artwork_artworkId_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_person_person" type="relfk" layer="0"
+	 src-table="public.person"
+	 dst-table="public.person" reference-fk="person_updatedBy_ref"
+	 src-required="false" dst-required="false">
+	<line>
+		<position x="1390.91" y="721.488"/>
+	<position x="1390.91" y="577"/>
+	<position x="1278.6" y="577"/>
+	</line>
+	<label ref-type="name-label">
+		<position x="0.0678726" y="-2.13553"/>
+	</label>
+</relationship>
+
+<relationship name="rel_tour_person1" type="relfk" layer="0"
+	 src-table="public.tour"
+	 dst-table="public.person" reference-fk="tour_updatedBy_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_artwork_image_person" type="relfk" layer="0"
+	 src-table="public.artwork_image"
+	 dst-table="public.person" reference-fk="artwork_image_uploadedBy_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_artwork_article_person" type="relfk" layer="0"
+	 src-table="public.artwork_article"
+	 dst-table="public.person" reference-fk="artwork_article_updatedBy_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_artwork_article_artwork" type="relfk" layer="0"
+	 src-table="public.artwork_article"
+	 dst-table="public.artwork" reference-fk="artwork_article_artworkId_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_artwork_tag_artwork" type="relfk" layer="0"
+	 src-table="public.artwork_tag"
+	 dst-table="public.artwork" reference-fk="artwork_tag_artworkId_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_artwork_tag_tag" type="relfk" layer="0"
+	 src-table="public.artwork_tag"
+	 dst-table="public.tag" reference-fk="artwork_tag_tagId_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_flag_person" type="relfk" layer="0"
+	 src-table="public.flag"
+	 dst-table="public.person" reference-fk="flag_flaggedBy_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_flag_person1" type="relfk" layer="0"
+	 src-table="public.flag"
+	 dst-table="public.person" reference-fk="flag_reviewedBy_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_artwork_article_flag_artwork_article" type="relfk" layer="0"
+	 src-table="public.artwork_article_flag"
+	 dst-table="public.artwork_article" reference-fk="artwork_article_flag_artworkArticleId_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_artwork_article_flag_flag" type="relfk" layer="0"
+	 src-table="public.artwork_article_flag"
+	 dst-table="public.flag" reference-fk="artwork_article_flag_flagId_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_artwork_image_flag_flag" type="relfk" layer="0"
+	 src-table="public.artwork_image_flag"
+	 dst-table="public.flag" reference-fk="artwork_image_flag_flagId_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_artwork_image_flag_artwork_image" type="relfk" layer="0"
+	 src-table="public.artwork_image_flag"
+	 dst-table="public.artwork_image" reference-fk="artwork_image_flag_artworkImageId_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_artwork_flag_flag" type="relfk" layer="0"
+	 src-table="public.artwork_flag"
+	 dst-table="public.flag" reference-fk="artwork_flag_flagId_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_artwork_flag_artwork" type="relfk" layer="0"
+	 src-table="public.artwork_flag"
+	 dst-table="public.artwork" reference-fk="artwork_flag_artworkId_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_person_flag_flag" type="relfk" layer="0"
+	 src-table="public.person_flag"
+	 dst-table="public.flag" reference-fk="person_flag_flagId_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_person_flag_person" type="relfk" layer="0"
+	 src-table="public.person_flag"
+	 dst-table="public.person" reference-fk="person_flag_personId_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_artist_artwork_flag_flag" type="relfk" layer="0"
+	 src-table="public.artist_artwork_flag"
+	 dst-table="public.flag" reference-fk="artist_artwork_flag_flagId_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_artist_artwork_flag_artist_artwork" type="relfk" layer="0"
+	 src-table="public.artist_artwork_flag"
+	 dst-table="public.artist_artwork" reference-fk="artist_artwork_flag_artistArtworkId_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_tour_flag_flag" type="relfk" layer="0"
+	 src-table="public.tour_flag"
+	 dst-table="public.flag" reference-fk="tour_flag_flagId_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_tour_flag_tour" type="relfk" layer="0"
+	 src-table="public.tour_flag"
+	 dst-table="public.tour" reference-fk="tour_flag_tourId_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_tag_flag_flag" type="relfk" layer="0"
+	 src-table="public.tag_flag"
+	 dst-table="public.flag" reference-fk="tag_flag_flagId_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_tag_flag_tag" type="relfk" layer="0"
+	 src-table="public.tag_flag"
+	 dst-table="public.tag" reference-fk="tag_flag_tag_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_artwork_tag_flag_artwork_tag" type="relfk" layer="0"
+	 src-table="public.artwork_tag_flag"
+	 dst-table="public.artwork_tag" reference-fk="artwork_tag_flag_artworkTag_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_artwork_tag_flag_flag" type="relfk" layer="0"
+	 src-table="public.artwork_tag_flag"
+	 dst-table="public.flag" reference-fk="artwork_tag_flag_flagId_fk"
+	 src-required="false" dst-required="false"/>
+
+</dbmodel>
