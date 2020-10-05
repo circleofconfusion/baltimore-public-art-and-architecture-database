@@ -1,0 +1,17 @@
+{
+  "name": "baltimore-public-art-db",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/server/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "node ./src/server/index.js"
+  },
+  "keywords": [],
+  "author": "Shane Knudsen",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server": "^2.18.1",
+    "graphql": "^15.3.0"
+  }
+}
