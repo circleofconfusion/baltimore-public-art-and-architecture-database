@@ -8,8 +8,9 @@
 -- Database creation must be done outside a multicommand file.
 -- These commands were put in this file only as a convenience.
 -- -- object: baltimore_street_art | type: DATABASE --
--- -- DROP DATABASE IF EXISTS baltimore_street_art;
--- CREATE DATABASE baltimore_street_art;
+DROP DATABASE IF EXISTS baltimore_street_art;
+CREATE DATABASE baltimore_street_art;
+\connect baltimore_street_art
 -- -- ddl-end --
 -- 
 
