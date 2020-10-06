@@ -8,7 +8,7 @@
 -- Database creation must be done outside a multicommand file.
 -- These commands were put in this file only as a convenience.
 -- -- object: baltimore_street_art | type: DATABASE --
-DROP DATABASE IF EXISTS baltimore_street_art;
+-- -- DROP DATABASE IF EXISTS baltimore_street_art;
 CREATE DATABASE baltimore_street_art;
 \connect baltimore_street_art
 -- -- ddl-end --
@@ -17,7 +17,7 @@ CREATE DATABASE baltimore_street_art;
 -- object: public.person | type: TABLE --
 -- DROP TABLE IF EXISTS public.person CASCADE;
 CREATE TABLE public.person (
-	id integer NOT NULL,
+	id integer NOT NULL GENERATED ALWAYS AS IDENTITY ,
 	"firstName" varchar(64),
 	"middleName" varchar(128),
 	"lastName" varchar(64),
