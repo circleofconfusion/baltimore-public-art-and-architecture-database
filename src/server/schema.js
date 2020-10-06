@@ -1,6 +1,6 @@
 import { gql } from 'apollo-server';
 
-export const SCHEMA = gql`
+export const schema = gql`
   interface Person {
     id: ID!
     firstName: String
@@ -45,7 +45,13 @@ export const SCHEMA = gql`
 
   type Artwork {
     id: ID!
-    # artists: [Artist]
+    title: String
+    description: String
+    statement: String
+    location: String
+    installationDate: String
+    updated: String
+    updatedBy: ID!
   }
 
   type Query {

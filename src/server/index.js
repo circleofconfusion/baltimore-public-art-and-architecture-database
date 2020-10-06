@@ -1,8 +1,10 @@
 import { ApolloServer } from 'apollo-server';
-import { SCHEMA } from './schema.js';
+import { schema } from './schema.js';
+import { resolvers } from './resolvers.js';
 
 const server = new ApolloServer({
-  typeDefs: SCHEMA
+  typeDefs: schema,
+  resolvers
 });
 
 server.listen().then(({url}) => {
