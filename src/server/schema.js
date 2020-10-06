@@ -48,10 +48,15 @@ export const schema = gql`
     title: String
     description: String
     statement: String
-    location: String
+    location: Point
     installationDate: String
     updated: String
     updatedBy: ID!
+  }
+
+  type Point {
+    x: Float
+    y: Float
   }
 
   type Query {
