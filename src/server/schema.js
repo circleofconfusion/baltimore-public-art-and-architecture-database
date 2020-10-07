@@ -41,6 +41,7 @@ export const schema = gql`
     updatedBy: ID!
     bio: String
     website: String
+    artworks: [Artwork]!
   }
 
   type Artwork {
@@ -52,6 +53,7 @@ export const schema = gql`
     installationDate: String
     updated: String
     updatedBy: ID!
+    artists: [Artist]!
   }
 
   type Point {
