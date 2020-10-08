@@ -1,17 +1,17 @@
-import { getUserById, getArtworkById, getArtistsByArtwork, getArtworksByArtist } from './db.js';
-
+import { getPersonById, getArtistsByArtwork } from './person.js';
+import { getArtworkById, getArtworksByArtist } from './artwork.js';
 export const resolvers = {
   Query: {
     user(parent, args, context, info) {
       const { id } = args;
-      return getUserById(id);
+      return getPersonById(id);
     },
     artwork(parent, args, context, info) {
       const { id } = args;
       return getArtworkById(id);
     },
     artist(parent, args, context, info) {
-      return getUserById(args.id);
+      return getPersonById(args.id);
     }
   },
   Artwork: {
