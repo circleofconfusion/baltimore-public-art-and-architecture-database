@@ -1,5 +1,5 @@
-import { getPersonById, getArtistsByArtwork } from './person.js';
-import { getArtworkById, getArtworksByArtist } from './artwork.js';
+import { getPersonById, getArtistsByArtwork, getAllArtists } from './person.js';
+import { getArtworkById, getAllArtworks } from './artwork.js';
 export const resolvers = {
   Query: {
     user(parent, args, context, info) {
@@ -10,8 +10,14 @@ export const resolvers = {
       const { id } = args;
       return getArtworkById(id);
     },
+    artworks(parent, args, context, info) {
+      return getAllArtworks();
+    },
     artist(parent, args, context, info) {
       return getPersonById(args.id);
+    },
+    artists() {
+      return getAllArtists();
     }
   },
   Artwork: {
@@ -20,8 +26,10 @@ export const resolvers = {
     }
   },
   Artist: {
-    artworks(parent, args, context, info) {
-      return getArtworksByArtist(parent.id);
+    artworks(parent, args, context) {
+      const { loaders } = context;
+      const { artworksByArtistIdsLoader } = loaders;
+      return artworksByArtistIdsLoader.load(parent.id);
     }
   }
 }

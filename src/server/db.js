@@ -7,6 +7,7 @@ const { Pool } = pg;
 const pool = new Pool();
 
 export async function query(sql, params) {
+  console.log('running query');
   const client = await pool.connect();
   try {
     return client.query(sql, params);
