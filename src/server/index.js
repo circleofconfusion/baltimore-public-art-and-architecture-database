@@ -2,15 +2,12 @@ import { ApolloServer } from 'apollo-server';
 import { schema } from './schema.js';
 import { resolvers } from './resolvers.js';
 import { artworksByArtistIdsLoader } from './artwork.js';
+import loaders from './loaders.js';
 
 const server = new ApolloServer({
   typeDefs: schema,
   resolvers,
-  context: {
-    loaders: {
-      artworksByArtistIdsLoader: artworksByArtistIdsLoader()
-    }
-  }
+  context: { loaders }
 });
 
 server.listen().then(({url}) => {

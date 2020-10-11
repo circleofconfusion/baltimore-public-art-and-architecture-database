@@ -22,7 +22,7 @@ export async function getArtworkById(id) {
   }
 }
 
-export async function getArtworksByArtistIds(artistIds) {
+async function getArtworksByArtistIds(artistIds) {
   try {
     const sql = 
       `SELECT a.id, a.title, a.description, a.statement,

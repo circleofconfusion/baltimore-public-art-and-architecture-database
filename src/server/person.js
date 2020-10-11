@@ -1,3 +1,5 @@
+import DataLoader from 'dataloader';
+import { groupBy, map } from 'ramda';
 import { query } from './db.js';
 
 export async function getPersonById(id) {
@@ -10,20 +12,24 @@ export async function getPersonById(id) {
   }
 }
 
-export async function getArtistsByArtwork(artworkId) {
-  console.log('getArtistsByArtworks');
+export async function getArtistsByArtworkIds(artworkIds) {
   try {
     const sql = 
-      `SELECT a.* FROM person a
+      `SELECT a.*, aa."artworkId" FROM person a
       JOIN artist_artwork aa ON a.id = aa."artistId"
       JOIN artwork aw ON aw.id = aa."artworkId"
-      WHERE aa."artworkId" = $1`;
-    const res = await query(sql, [artworkId]);
-    return res.rows ? res.rows : [];
+      WHERE aa."artworkId" = ANY($1)`;
+    const res = await query(sql, [artworkIds]);
+    const rowsById = groupBy(artist => artist.artworkId, res.rows);
+    return map(id => rowsById[id] ? rowsById[id] : [], artworkIds)
   } catch(err) {
     console.error(err);
     throw err;
   }
+}
+
+export function artistsByArtworkIdsLoader() {
+  return new DataLoader(getArtistsByArtworkIds);
 }
 
 export async function getAllArtists() {

@@ -1,4 +1,4 @@
-import { getPersonById, getArtistsByArtwork, getAllArtists } from './person.js';
+import { getPersonById, getArtistsByArtworkIds, getAllArtists, artistsByArtworkIdsLoader } from './person.js';
 import { getArtworkById, getAllArtworks } from './artwork.js';
 export const resolvers = {
   Query: {
@@ -21,8 +21,10 @@ export const resolvers = {
     }
   },
   Artwork: {
-    artists(parent, args, context, info) {
-      return getArtistsByArtwork(parent.id);
+    artists(artwork, args, context, info) {
+      const { loaders } = context;
+      const { artistsByArtworkIdsLoader } = loaders;
+      return artistsByArtworkIdsLoader.load(artwork.id);
     }
   },
   Artist: {
