@@ -43,3 +43,22 @@ async function getArtworksByArtistIds(artistIds) {
 export function artworksByArtistIdsLoader() {
   return new DataLoader(getArtworksByArtistIds);
 }
+
+async function getArtworkStarsByArtworkIds(artworkIds) {
+  try {
+    const sql = 
+    `SELECT artwork_star.* FROM artwork_star
+    JOIN artwork ON artwork_star."artworkId" = artwork.id
+    WHERE artwork_star."artworkId" = ANY($1)`;
+    const res = await query(sql, [artworkIds]);
+    const rowsById = groupBy(a => a.artworkId, res.rows);
+    return map(id => rowsById[id] ? rowsById[id] : [], artworkIds);
+  } catch(err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+export function artworkStarsByArtworkIdsLoader() {
+  return new DataLoader(getArtworkStarsByArtworkIds);
+}

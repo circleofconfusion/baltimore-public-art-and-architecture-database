@@ -2,18 +2,18 @@ import { getPersonById, getArtistsByArtworkIds, getAllArtists, artistsByArtworkI
 import { getArtworkById, getAllArtworks } from './artwork.js';
 export const resolvers = {
   Query: {
-    user(parent, args, context, info) {
+    user(parent, args, context) {
       const { id } = args;
       return getPersonById(id);
     },
-    artwork(parent, args, context, info) {
+    artwork(parent, args, context) {
       const { id } = args;
       return getArtworkById(id);
     },
-    artworks(parent, args, context, info) {
+    artworks(parent, args, context) {
       return getAllArtworks();
     },
-    artist(parent, args, context, info) {
+    artist(parent, args, context) {
       return getPersonById(args.id);
     },
     artists() {
@@ -21,10 +21,15 @@ export const resolvers = {
     }
   },
   Artwork: {
-    artists(artwork, args, context, info) {
+    artists(artwork, args, context) {
       const { loaders } = context;
       const { artistsByArtworkIdsLoader } = loaders;
       return artistsByArtworkIdsLoader.load(artwork.id);
+    },
+    stars(artwork, args, context) {
+      const { loaders } = context;
+      const { artworkStarsByArtworkIdsLoader } = loaders;
+      return artworkStarsByArtworkIdsLoader.load(artwork.id);
     }
   },
   Artist: {
