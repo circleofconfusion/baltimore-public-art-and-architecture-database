@@ -8,7 +8,7 @@
 -- Database creation must be done outside a multicommand file.
 -- These commands were put in this file only as a convenience.
 -- -- object: baltimore_street_art | type: DATABASE --
--- -- DROP DATABASE IF EXISTS baltimore_street_art;
+DROP DATABASE IF EXISTS baltimore_street_art;
 CREATE DATABASE baltimore_street_art;
 \connect baltimore_street_art
 -- -- ddl-end --
@@ -51,26 +51,10 @@ CREATE TABLE public.following (
 -- ALTER TABLE public.following OWNER TO postgres;
 -- ddl-end --
 
--- object: public.artwork | type: TABLE --
--- DROP TABLE IF EXISTS public.artwork CASCADE;
-CREATE TABLE public.artwork (
-	id integer NOT NULL GENERATED ALWAYS AS IDENTITY ,
-	title varchar(128) NOT NULL,
-	description text,
-	statement text,
-	location point NOT NULL,
-	"installationDate" date,
-	updated timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	"updatedBy" integer NOT NULL,
-	CONSTRAINT artwork_pk PRIMARY KEY (id)
-
-);
--- ddl-end --
-COMMENT ON COLUMN public.artwork.statement IS E'Artist''s statement';
--- ddl-end --
-COMMENT ON COLUMN public.artwork.location IS E'Lat/Lon of artwork';
--- ddl-end --
--- ALTER TABLE public.artwork OWNER TO postgres;
+-- object: postgis | type: EXTENSION --
+-- DROP EXTENSION IF EXISTS postgis CASCADE;
+CREATE EXTENSION postgis
+;
 -- ddl-end --
 
 -- object: public.artwork_star | type: TABLE --
@@ -314,6 +298,40 @@ CREATE TABLE public.artwork_tag_flag (
 );
 -- ddl-end --
 -- ALTER TABLE public.artwork_tag_flag OWNER TO postgres;
+-- ddl-end --
+
+-- object: public.artwork | type: TABLE --
+-- DROP TABLE IF EXISTS public.artwork CASCADE;
+CREATE TABLE public.artwork (
+	id integer NOT NULL GENERATED ALWAYS AS IDENTITY ,
+	title varchar(128) NOT NULL,
+	description text,
+	statement text,
+	location geography(POINT) NOT NULL,
+	"installationDate" date,
+	updated timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	"updatedBy" integer NOT NULL,
+	CONSTRAINT artwork_pk PRIMARY KEY (id)
+
+);
+-- ddl-end --
+COMMENT ON COLUMN public.artwork.statement IS E'Artist''s statement';
+-- ddl-end --
+COMMENT ON COLUMN public.artwork.location IS E'Lat/Lon of artwork';
+-- ddl-end --
+-- ALTER TABLE public.artwork OWNER TO postgres;
+-- ddl-end --
+
+-- object: public.artist_tag | type: TABLE --
+-- DROP TABLE IF EXISTS public.artist_tag CASCADE;
+CREATE TABLE public.artist_tag (
+	artist_id integer NOT NULL,
+	tag varchar(64) NOT NULL,
+	CONSTRAINT artist_tag_pk PRIMARY KEY (artist_id,tag)
+
+);
+-- ddl-end --
+-- ALTER TABLE public.artist_tag OWNER TO postgres;
 -- ddl-end --
 
 -- object: "person_updatedBy_ref" | type: CONSTRAINT --
@@ -568,6 +586,20 @@ ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ALTER TABLE public.artwork_tag_flag DROP CONSTRAINT IF EXISTS "artwork_tag_flag_flagId_fk" CASCADE;
 ALTER TABLE public.artwork_tag_flag ADD CONSTRAINT "artwork_tag_flag_flagId_fk" FOREIGN KEY ("flagId")
 REFERENCES public.flag (id) MATCH FULL
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+-- ddl-end --
+
+-- object: "artist_tag_artistId_fk" | type: CONSTRAINT --
+-- ALTER TABLE public.artist_tag DROP CONSTRAINT IF EXISTS "artist_tag_artistId_fk" CASCADE;
+ALTER TABLE public.artist_tag ADD CONSTRAINT "artist_tag_artistId_fk" FOREIGN KEY (artist_id)
+REFERENCES public.person (id) MATCH FULL
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+-- ddl-end --
+
+-- object: artist_tag_tag_fk | type: CONSTRAINT --
+-- ALTER TABLE public.artist_tag DROP CONSTRAINT IF EXISTS artist_tag_tag_fk CASCADE;
+ALTER TABLE public.artist_tag ADD CONSTRAINT artist_tag_tag_fk FOREIGN KEY (tag)
+REFERENCES public.tag (tag) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
 

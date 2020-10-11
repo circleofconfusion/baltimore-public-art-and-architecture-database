@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.2" author="Shane Knudsen" last-position="0,0" last-zoom="0.8" max-obj-count="43"
+<dbmodel pgmodeler-ver="0.9.2" author="Shane Knudsen" last-position="0,0" last-zoom="0.8" max-obj-count="45"
 	 default-schema="public" default-owner="postgres">
 <database name="baltimore_street_art" is-template="false" allow-conns="true">
 </database>
@@ -15,7 +15,8 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="public"/>
 	<role name="postgres"/>
 	<position x="1100" y="600"/>
-	<column name="id" not-null="true">
+	<column name="id" not-null="true"
+	 identity-type="ALWAYS">
 		<type name="integer" length="0"/>
 	</column>
 	<column name="firstName">
@@ -80,41 +81,8 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="artwork" layer="0" collapse-mode="2" max-obj-count="9">
-	<schema name="public"/>
-	<role name="postgres"/>
-	<position x="680" y="340"/>
-	<column name="id" not-null="true"
-	 identity-type="ALWAYS">
-		<type name="integer" length="0"/>
-	</column>
-	<column name="title" not-null="true">
-		<type name="varchar" length="128"/>
-	</column>
-	<column name="description">
-		<type name="text" length="0"/>
-	</column>
-	<column name="statement">
-		<type name="text" length="0"/>
-		<comment><![CDATA[Artist's statement]]></comment>
-	</column>
-	<column name="location" not-null="true">
-		<type name="point" length="0"/>
-		<comment><![CDATA[Lat/Lon of artwork]]></comment>
-	</column>
-	<column name="installationDate">
-		<type name="date" length="0"/>
-	</column>
-	<column name="updated" not-null="true" default-value="CURRENT_TIMESTAMP">
-		<type name="timestamp" length="0"/>
-	</column>
-	<column name="updatedBy" not-null="true">
-		<type name="integer" length="0"/>
-	</column>
-	<constraint name="artwork_pk" type="pk-constr" table="public.artwork">
-		<columns names="id" ref-type="src-columns"/>
-	</constraint>
-</table>
+<extension name="postgis">
+</extension>
 
 <table name="artwork_star" layer="0" collapse-mode="2" max-obj-count="3">
 	<schema name="public"/>
@@ -446,6 +414,57 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
+<table name="artwork" layer="0" collapse-mode="2" max-obj-count="9">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="680" y="340"/>
+	<column name="id" not-null="true"
+	 identity-type="ALWAYS">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="title" not-null="true">
+		<type name="varchar" length="128"/>
+	</column>
+	<column name="description">
+		<type name="text" length="0"/>
+	</column>
+	<column name="statement">
+		<type name="text" length="0"/>
+		<comment><![CDATA[Artist's statement]]></comment>
+	</column>
+	<column name="location" not-null="true">
+		<type name="geography" length="0" spatial-type="POINT" variation="0" srid="0"/>
+		<comment><![CDATA[Lat/Lon of artwork]]></comment>
+	</column>
+	<column name="installationDate">
+		<type name="date" length="0"/>
+	</column>
+	<column name="updated" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="updatedBy" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<constraint name="artwork_pk" type="pk-constr" table="public.artwork">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="artist_tag" layer="0" collapse-mode="2" max-obj-count="3">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="360" y="640"/>
+	<column name="artist_id" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="tag" not-null="true">
+		<type name="varchar" length="64"/>
+	</column>
+	<constraint name="artist_tag_pk" type="pk-constr" table="public.artist_tag">
+		<columns names="artist_id,tag" ref-type="src-columns"/>
+	</constraint>
+</table>
+
 <constraint name="person_updatedBy_ref" type="fk-constr" comparison-type="MATCH FULL"
 	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.person" table="public.person">
 	<columns names="updatedBy" ref-type="src-columns"/>
@@ -663,6 +682,18 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
+<constraint name="artist_tag_artistId_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.person" table="public.artist_tag">
+	<columns names="artist_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="artist_tag_tag_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.tag" table="public.artist_tag">
+	<columns names="tag" ref-type="src-columns"/>
+	<columns names="tag" ref-type="dst-columns"/>
+</constraint>
+
 <relationship name="rel_following_person" type="relfk" layer="0"
 	 src-table="public.following"
 	 dst-table="public.person" reference-fk="follower_fk"
@@ -842,14 +873,24 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 dst-table="public.tag" reference-fk="tag_flag_tag_fk"
 	 src-required="false" dst-required="false"/>
 
-<relationship name="rel_artwork_tag_flag_artwork_tag" type="relfk" layer="0"
-	 src-table="public.artwork_tag_flag"
-	 dst-table="public.artwork_tag" reference-fk="artwork_tag_flag_artworkTag_fk"
+<relationship name="rel_artist_tag_person" type="relfk" layer="0"
+	 src-table="public.artist_tag"
+	 dst-table="public.person" reference-fk="artist_tag_artistId_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_artist_tag_tag" type="relfk" layer="0"
+	 src-table="public.artist_tag"
+	 dst-table="public.tag" reference-fk="artist_tag_tag_fk"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_artwork_tag_flag_flag" type="relfk" layer="0"
 	 src-table="public.artwork_tag_flag"
 	 dst-table="public.flag" reference-fk="artwork_tag_flag_flagId_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_artwork_tag_flag_artwork_tag" type="relfk" layer="0"
+	 src-table="public.artwork_tag_flag"
+	 dst-table="public.artwork_tag" reference-fk="artwork_tag_flag_artworkTag_fk"
 	 src-required="false" dst-required="false"/>
 
 </dbmodel>
