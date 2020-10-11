@@ -47,12 +47,14 @@ export function artworksByArtistIdsLoader() {
 async function getArtworkStarsByArtworkIds(artworkIds) {
   try {
     const sql = 
-    `SELECT artwork_star.* FROM artwork_star
+    `SELECT artwork_star."artworkId", artwork_star.timestamp, person.* FROM artwork_star
     JOIN artwork ON artwork_star."artworkId" = artwork.id
+    JOIN person ON artwork_star."personId" = person.id
     WHERE artwork_star."artworkId" = ANY($1)`;
     const res = await query(sql, [artworkIds]);
     const rowsById = groupBy(a => a.artworkId, res.rows);
-    return map(id => rowsById[id] ? rowsById[id] : [], artworkIds);
+    const groupedRows = map(id => rowsById[id] ? rowsById[id] : [], artworkIds);
+    return groupedRows;
   } catch(err) {
     console.error(err);
     throw err;

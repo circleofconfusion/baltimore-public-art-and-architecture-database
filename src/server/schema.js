@@ -59,9 +59,8 @@ export const schema = gql`
   }
 
   type Star {
-    artworkId: ID!
-    personId: ID!
     timestamp: String
+    user: User!
   }
 
   type Query {

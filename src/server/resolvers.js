@@ -38,5 +38,22 @@ export const resolvers = {
       const { artworksByArtistIdsLoader } = loaders;
       return artworksByArtistIdsLoader.load(parent.id);
     }
+  },
+  Star: {
+    user(star, args, context, info) {
+      return {
+        id: star.id,
+        firstName: star.firstName,
+        middleName: star.middleName,
+        lastName: star.lastName,
+        email: star.email,
+        imageUrl: star.imageUrl,
+        birthDate: star.birthDate,
+        deathDate: star.deathDate,
+        updated: star.updated,
+        updatedBy: star.updatedBy,
+        username: star.username
+      }
+    }
   }
 }
