@@ -10,4 +10,5 @@ RUN apt-get update \
            postgresql-$PG_MAJOR-postgis-$POSTGIS_MAJOR \
            postgresql-$PG_MAJOR-postgis-$POSTGIS_MAJOR-scripts \
       && rm -rf /var/lib/apt/lists/*
-ADD baltimore_street_art.sql /docker-entrypoint-initdb.d
+ADD baltimore_street_art.sql /docker-entrypoint-initdb.d/
+ADD test_data.sql /docker-entrypoint-initdb.d/
