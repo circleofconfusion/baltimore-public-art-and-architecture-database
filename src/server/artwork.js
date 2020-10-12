@@ -70,7 +70,13 @@ export function artworkStarsByArtworkIdsLoader() {
 
 async function getArtworkArticlesByArtworkIds(artworkIds) {
   try {
-
+    const sql =
+    `SELECT aa.* FROM artwork_article aa WHERE aa.artwork_id = ANY($1)`;
+    const res = await query(sql, [artworkIds]);
+    const rows = humps.camelizeKeys(res.rows);
+    const rowsById = groupBy(a => a.artworkId, rows);
+    const groupedRows = map(id => rowsById[id] ? rowsById[id] : [], artworkIds);
+    return groupedRows;
   } catch(err) {
     console.error(err);
     throw err;
