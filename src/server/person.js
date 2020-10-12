@@ -15,10 +15,10 @@ export async function getPersonById(id) {
 export async function getArtistsByArtworkIds(artworkIds) {
   try {
     const sql = 
-      `SELECT a.*, aa."artworkId" FROM person a
-      JOIN artist_artwork aa ON a.id = aa."artistId"
-      JOIN artwork aw ON aw.id = aa."artworkId"
-      WHERE aa."artworkId" = ANY($1)`;
+      `SELECT a.*, aa.artwork_id FROM person a
+      JOIN artist_artwork aa ON a.id = aa.artist_id
+      JOIN artwork aw ON aw.id = aa.artwork_id
+      WHERE aa.artwork_id = ANY($1)`;
     const res = await query(sql, [artworkIds]);
     const rowsById = groupBy(artist => artist.artworkId, res.rows);
     return map(id => rowsById[id] ? rowsById[id] : [], artworkIds)
