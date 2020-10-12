@@ -5,7 +5,12 @@ import humps from 'humps';
 
 export async function getAllArtworks() {
   try {
-    const res = await query('SELECT * FROM artwork');
+    const sql =
+    `SELECT a.id, a.title, a.description, a.statement,
+    ST_X(location::geometry) as longitude, ST_Y(location::geometry) as latitude,
+    a.installation_date, a.updated, a.updated_by
+    FROM artwork a`;
+    const res = await query(sql);
     return humps.camelizeKeys(res.rows);
   } catch(err) {
     console.error(err);
@@ -15,7 +20,13 @@ export async function getAllArtworks() {
 
 export async function getArtworkById(id) {
   try {
-    const res = await query('SELECT * FROM artwork WHERE id = $1', [id]);
+    const sql =
+    `SELECT a.id, a.title, a.description, a.statement,
+    ST_X(location::geometry) as longitude, ST_Y(location::geometry) as latitude,
+    a.installation_date, a.updated, a.updated_by
+    FROM artwork a
+    WHERE id = $1`;
+    const res = await query(sql, [id]);
     return humps.camelizeKeys(res.rows[0]);
   } catch(err) {
     console.error(err);
