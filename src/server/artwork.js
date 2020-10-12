@@ -27,9 +27,9 @@ async function getArtworksByArtistIds(artistIds) {
     const sql = 
       `SELECT a.id, a.title, a.description, a.statement,
        ST_X(location::geometry) as longitude, ST_Y(location::geometry) as latitude,
-       a."installationDate", a.updated, a."updatedBy", artist_artwork."artistId" FROM artwork a
-      JOIN artist_artwork  ON a.id = artist_artwork."artworkId"
-      JOIN person ON person.id = artist_artwork."artistId"
+       a.installation_date, a.updated, a.updated_by, artist_artwork.artist_id FROM artwork a
+      JOIN artist_artwork  ON a.id = artist_artwork.artwork_id
+      JOIN person ON person.id = artist_artwork.artist_id
       WHERE person.id = ANY($1)`;
     const res = await query(sql, [artistIds]);
     const rowsById = groupBy(artwork => artwork.artistId, res.rows);
@@ -47,12 +47,12 @@ export function artworksByArtistIdsLoader() {
 async function getArtworkStarsByArtworkIds(artworkIds) {
   try {
     const sql = 
-    `SELECT artwork_star."artworkId", artwork_star.timestamp, person.* FROM artwork_star
-    JOIN artwork ON artwork_star."artworkId" = artwork.id
-    JOIN person ON artwork_star."personId" = person.id
-    WHERE artwork_star."artworkId" = ANY($1)`;
+    `SELECT artwork_star.artwork_id, artwork_star.timestamp, person.* FROM artwork_star
+    JOIN artwork ON artwork_star.artwork_id = artwork.id
+    JOIN person ON artwork_star.person_id = person.id
+    WHERE artwork_star.artwork_id = ANY($1)`;
     const res = await query(sql, [artworkIds]);
-    const rowsById = groupBy(a => a.artworkId, res.rows);
+    const rowsById = groupBy(a => a.artwork_id, res.rows);
     const groupedRows = map(id => rowsById[id] ? rowsById[id] : [], artworkIds);
     return groupedRows;
   } catch(err) {
@@ -63,4 +63,17 @@ async function getArtworkStarsByArtworkIds(artworkIds) {
 
 export function artworkStarsByArtworkIdsLoader() {
   return new DataLoader(getArtworkStarsByArtworkIds);
+}
+
+async function getArtworkArticlesByArtworkIds(artworkIds) {
+  try {
+
+  } catch(err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+export function artworkArticlesByArtworkIdsLoader() {
+  return new DataLoader(getArtworkArticlesByArtworkIds);
 }
