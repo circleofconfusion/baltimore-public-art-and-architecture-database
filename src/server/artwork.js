@@ -97,3 +97,21 @@ async function getArtworkArticlesByArtworkIds(artworkIds) {
 export function artworkArticlesByArtworkIdsLoader() {
   return new DataLoader(getArtworkArticlesByArtworkIds);
 }
+
+async function getImagesByArtworkIds(artworkIds) {
+  try {
+    const sql = `SELECT ai.* FROM artwork_image ai WHERE ai.artwork_id = ANY($1)`;
+    const res = await query(sql, [artworkIds]);
+    const rows = humps.camelizeKeys(res.rows);
+    const rowsById = groupBy(a => a.artworkId, rows);
+    const groupedRows = map(id => rowsById[id] ? rowsById[id] : [], artworkIds);
+    return groupedRows;
+  } catch(err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+export function imagesByArtworkIdsLoader() {
+  return new DataLoader(getImagesByArtworkIds);
+}

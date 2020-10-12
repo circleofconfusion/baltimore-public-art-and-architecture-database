@@ -57,6 +57,7 @@ export const schema = gql`
     artists: [Artist]!
     stars: [Star]!
     articles: [Article]!
+    images: [ArtworkImage]!
   }
 
   type Star {
@@ -71,6 +72,14 @@ export const schema = gql`
     articleTitle: String
     timestamp: String
     updatedBy: ID!
+  }
+
+  type ArtworkImage {
+    id: ID!
+    artworkId: ID!
+    imageUrl: String
+    timestamp: String
+    uploadedBy: String
   }
 
   type Query {
