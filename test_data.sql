@@ -12,4 +12,5 @@ INSERT INTO public.artist_artwork (artist_id,artwork_id) VALUES
 INSERT INTO public.artwork_star (person_id,artwork_id,"timestamp") VALUES
 	 (1,2,'2020-10-10 22:52:33.488501');
 INSERT INTO artwork_article (artwork_id,article_url,article_title,updated_by)
-	values (3,'https://www.baltimoresun.com/news/bs-xpm-2001-11-14-0111140274-story.html','Female, male, monumental', 1)
+	values (3,'https://www.baltimoresun.com/news/bs-xpm-2001-11-14-0111140274-story.html','Female, male, monumental', 1);
+INSERT INTO artwork_image (artwork_id, image_url,uploaded_by) VALUES (3,'https://upload.wikimedia.org/wikipedia/en/d/db/BAL_Penn_station.png',1);
