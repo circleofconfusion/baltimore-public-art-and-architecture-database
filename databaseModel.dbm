@@ -190,7 +190,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="artwork_article" layer="0" collapse-mode="2" max-obj-count="7">
+<table name="artwork_article" layer="0" collapse-mode="2" max-obj-count="8">
 	<schema name="public"/>
 	<role name="postgres"/>
 	<position x="1100" y="60"/>
@@ -206,6 +206,9 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</column>
 	<column name="article_title">
 		<type name="varchar" length="256"/>
+	</column>
+	<column name="article_date">
+		<type name="timestamp" length="0"/>
 	</column>
 	<column name="timestamp" default-value="CURRENT_TIMESTAMP">
 		<type name="timestamp" length="0"/>
