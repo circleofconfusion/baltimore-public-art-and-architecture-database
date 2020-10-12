@@ -56,11 +56,21 @@ export const schema = gql`
     updatedBy: ID!
     artists: [Artist]!
     stars: [Star]!
+    articles: [Article]!
   }
 
   type Star {
     timestamp: String
     user: User!
+  }
+
+  type Article {
+    id: ID!
+    artworkId: ID!
+    articleUrl: String
+    articleTitle: String
+    timestamp: String
+    updatedBy: ID!
   }
 
   type Query {

@@ -1,11 +1,12 @@
 import DataLoader from 'dataloader';
 import { groupBy, map } from 'ramda';
 import { query } from './db.js';
+import humps from 'humps';
 
 export async function getPersonById(id) {
   try {
     const res = await query('SELECT * FROM person WHERE id = $1', [id]);
-    return res.rows[0];
+    return humps.camelizeKeys(res.rows[0]);
   } catch(err) {
     console.error(err);
     throw err;
@@ -20,7 +21,8 @@ export async function getArtistsByArtworkIds(artworkIds) {
       JOIN artwork aw ON aw.id = aa.artwork_id
       WHERE aa.artwork_id = ANY($1)`;
     const res = await query(sql, [artworkIds]);
-    const rowsById = groupBy(artist => artist.artworkId, res.rows);
+    const rows = humps.camelizeKeys(res.rows);
+    const rowsById = groupBy(artist => artist.artworkId, rows);
     return map(id => rowsById[id] ? rowsById[id] : [], artworkIds)
   } catch(err) {
     console.error(err);
@@ -35,7 +37,7 @@ export function artistsByArtworkIdsLoader() {
 export async function getAllArtists() {
   try {
     const res = await query('SELECT * FROM person'); // TODO: This will return all persons, not just artists
-    return res.rows;
+    return humps.camelizeKeys(res.rows);
   } catch (err) {
     console.error(err);
     throw err;

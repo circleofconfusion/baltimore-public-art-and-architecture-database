@@ -30,6 +30,11 @@ export const resolvers = {
       const { loaders } = context;
       const { artworkStarsByArtworkIdsLoader } = loaders;
       return artworkStarsByArtworkIdsLoader.load(artwork.id);
+    },
+    articles(artwork, args, context) {
+      const { loaders } = context;
+      const { artworkArticlesByArtworkIdsLoader } = loaders;
+      return artworkArticlesByArtworkIdsLoader.load(artwork.id);
     }
   },
   Artist: {

@@ -1,11 +1,12 @@
 import { query } from './db.js';
 import { groupBy, map } from 'ramda';
 import DataLoader from 'dataloader';
+import humps from 'humps';
 
 export async function getAllArtworks() {
   try {
     const res = await query('SELECT * FROM artwork');
-    return res.rows;
+    return humps.camelizeKeys(res.rows);
   } catch(err) {
     console.error(err);
     throw err;
@@ -15,7 +16,7 @@ export async function getAllArtworks() {
 export async function getArtworkById(id) {
   try {
     const res = await query('SELECT * FROM artwork WHERE id = $1', [id]);
-    return res.rows[0];
+    return humps.camelizeKeys(res.rows[0]);
   } catch(err) {
     console.error(err);
     throw err;
@@ -32,7 +33,8 @@ async function getArtworksByArtistIds(artistIds) {
       JOIN person ON person.id = artist_artwork.artist_id
       WHERE person.id = ANY($1)`;
     const res = await query(sql, [artistIds]);
-    const rowsById = groupBy(artwork => artwork.artistId, res.rows);
+    const rows = humps.camelizeKeys(res.rows);
+    const rowsById = groupBy(artwork => artwork.artistId, rows);
     return map(id => rowsById[id] ? rowsById[id] : [], artistIds);
   } catch(err) {
     console.error(err);
@@ -52,7 +54,8 @@ async function getArtworkStarsByArtworkIds(artworkIds) {
     JOIN person ON artwork_star.person_id = person.id
     WHERE artwork_star.artwork_id = ANY($1)`;
     const res = await query(sql, [artworkIds]);
-    const rowsById = groupBy(a => a.artwork_id, res.rows);
+    const rows = humps.camelizeKeys(res.rows);
+    const rowsById = groupBy(a => a.artworkId, rows);
     const groupedRows = map(id => rowsById[id] ? rowsById[id] : [], artworkIds);
     return groupedRows;
   } catch(err) {
