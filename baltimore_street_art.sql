@@ -18,20 +18,18 @@ CREATE DATABASE baltimore_street_art;
 -- DROP TABLE IF EXISTS public.person CASCADE;
 CREATE TABLE public.person (
 	id integer NOT NULL GENERATED ALWAYS AS IDENTITY ,
-	"firstName" varchar(64),
-	"middleName" varchar(128),
-	"lastName" varchar(64),
+	first_name varchar(64),
+	middle_name varchar(128),
+	last_name varchar(64),
 	email varchar(128),
-	"imageUrl" varchar(512),
-	"birthDate" date,
-	"birthplaceId" integer,
-	"deathDate" date,
-	"deathplaceId" integer,
+	image_url varchar(512),
+	birth_date date,
+	death_date date,
 	username varchar(32),
 	bio text,
 	website varchar(512),
 	updated timestamp DEFAULT CURRENT_TIMESTAMP,
-	"updatedBy" integer,
+	updated_by integer,
 	CONSTRAINT person_pk PRIMARY KEY (id)
 
 );
@@ -60,10 +58,10 @@ CREATE EXTENSION postgis
 -- object: public.artwork_star | type: TABLE --
 -- DROP TABLE IF EXISTS public.artwork_star CASCADE;
 CREATE TABLE public.artwork_star (
-	"personId" integer NOT NULL,
-	"artworkId" integer NOT NULL,
+	person_id integer NOT NULL,
+	artwork_id integer NOT NULL,
 	"timestamp" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	CONSTRAINT artwork_star_pk PRIMARY KEY ("personId","artworkId")
+	CONSTRAINT artwork_star_pk PRIMARY KEY (person_id,artwork_id)
 
 );
 -- ddl-end --
@@ -82,10 +80,10 @@ CREATE TYPE public.flag_type AS
 -- DROP TABLE IF EXISTS public.artwork_image CASCADE;
 CREATE TABLE public.artwork_image (
 	id integer NOT NULL GENERATED ALWAYS AS IDENTITY ,
-	"artworkId" integer NOT NULL,
-	"imageUrl" varchar(512),
+	artwork_id integer NOT NULL,
+	image_url varchar(512),
 	"timestamp" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	"uploadedBy" integer NOT NULL,
+	uploaded_by integer NOT NULL,
 	CONSTRAINT artwork_image_pk PRIMARY KEY (id)
 
 );
@@ -129,9 +127,9 @@ CREATE TABLE public.tour_artwork (
 -- object: public.artist_artwork | type: TABLE --
 -- DROP TABLE IF EXISTS public.artist_artwork CASCADE;
 CREATE TABLE public.artist_artwork (
-	"artistId" integer NOT NULL,
-	"artworkId" integer NOT NULL,
-	CONSTRAINT artist_artwork_pk PRIMARY KEY ("artistId","artworkId")
+	artist_id integer NOT NULL,
+	artwork_id integer NOT NULL,
+	CONSTRAINT artist_artwork_pk PRIMARY KEY (artist_id,artwork_id)
 
 );
 -- ddl-end --
@@ -142,11 +140,11 @@ CREATE TABLE public.artist_artwork (
 -- DROP TABLE IF EXISTS public.artwork_article CASCADE;
 CREATE TABLE public.artwork_article (
 	id integer NOT NULL GENERATED ALWAYS AS IDENTITY ,
-	"artworkId" integer NOT NULL,
-	"articleUrl" varchar(512),
+	artwork_id integer NOT NULL,
+	article_url varchar(512),
 	article_title varchar(256),
 	"timestamp" timestamp DEFAULT CURRENT_TIMESTAMP,
-	"updatedBy" integer NOT NULL,
+	updated_by integer NOT NULL,
 	CONSTRAINT artwork_article_pk PRIMARY KEY (id)
 
 );
@@ -168,9 +166,9 @@ CREATE TABLE public.tag (
 -- object: public.artwork_tag | type: TABLE --
 -- DROP TABLE IF EXISTS public.artwork_tag CASCADE;
 CREATE TABLE public.artwork_tag (
-	"artworkId" integer NOT NULL,
+	artwork_id integer NOT NULL,
 	tag varchar(64) NOT NULL,
-	CONSTRAINT artwork_tag_pk PRIMARY KEY ("artworkId",tag)
+	CONSTRAINT artwork_tag_pk PRIMARY KEY (artwork_id,tag)
 
 );
 -- ddl-end --
@@ -308,9 +306,9 @@ CREATE TABLE public.artwork (
 	description text,
 	statement text,
 	location geography(POINT) NOT NULL,
-	"installationDate" date,
+	installation_date date,
 	updated timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	"updatedBy" integer NOT NULL,
+	updated_by integer NOT NULL,
 	CONSTRAINT artwork_pk PRIMARY KEY (id)
 
 );
@@ -336,7 +334,7 @@ CREATE TABLE public.artist_tag (
 
 -- object: "person_updatedBy_ref" | type: CONSTRAINT --
 -- ALTER TABLE public.person DROP CONSTRAINT IF EXISTS "person_updatedBy_ref" CASCADE;
-ALTER TABLE public.person ADD CONSTRAINT "person_updatedBy_ref" FOREIGN KEY ("updatedBy")
+ALTER TABLE public.person ADD CONSTRAINT "person_updatedBy_ref" FOREIGN KEY (updated_by)
 REFERENCES public.person (id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
@@ -357,7 +355,7 @@ ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- object: updated_by_fk | type: CONSTRAINT --
 -- ALTER TABLE public.artwork DROP CONSTRAINT IF EXISTS updated_by_fk CASCADE;
-ALTER TABLE public.artwork ADD CONSTRAINT updated_by_fk FOREIGN KEY ("updatedBy")
+ALTER TABLE public.artwork ADD CONSTRAINT updated_by_fk FOREIGN KEY (updated_by)
 REFERENCES public.person (id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
@@ -365,30 +363,30 @@ COMMENT ON CONSTRAINT updated_by_fk ON public.artwork  IS E'Person ID of the per
 -- ddl-end --
 
 
--- object: "star_personId_fk" | type: CONSTRAINT --
--- ALTER TABLE public.artwork_star DROP CONSTRAINT IF EXISTS "star_personId_fk" CASCADE;
-ALTER TABLE public.artwork_star ADD CONSTRAINT "star_personId_fk" FOREIGN KEY ("personId")
+-- object: star_person_id_fk | type: CONSTRAINT --
+-- ALTER TABLE public.artwork_star DROP CONSTRAINT IF EXISTS star_person_id_fk CASCADE;
+ALTER TABLE public.artwork_star ADD CONSTRAINT star_person_id_fk FOREIGN KEY (person_id)
 REFERENCES public.person (id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
 
--- object: "star_artworkId_fk" | type: CONSTRAINT --
--- ALTER TABLE public.artwork_star DROP CONSTRAINT IF EXISTS "star_artworkId_fk" CASCADE;
-ALTER TABLE public.artwork_star ADD CONSTRAINT "star_artworkId_fk" FOREIGN KEY ("artworkId")
+-- object: star_artwork_id_fk | type: CONSTRAINT --
+-- ALTER TABLE public.artwork_star DROP CONSTRAINT IF EXISTS star_artwork_id_fk CASCADE;
+ALTER TABLE public.artwork_star ADD CONSTRAINT star_artwork_id_fk FOREIGN KEY (artwork_id)
 REFERENCES public.artwork (id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
 
 -- object: image_artwork_fk | type: CONSTRAINT --
 -- ALTER TABLE public.artwork_image DROP CONSTRAINT IF EXISTS image_artwork_fk CASCADE;
-ALTER TABLE public.artwork_image ADD CONSTRAINT image_artwork_fk FOREIGN KEY ("artworkId")
+ALTER TABLE public.artwork_image ADD CONSTRAINT image_artwork_fk FOREIGN KEY (artwork_id)
 REFERENCES public.artwork (id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
 
--- object: "artwork_image_uploadedBy_fk" | type: CONSTRAINT --
--- ALTER TABLE public.artwork_image DROP CONSTRAINT IF EXISTS "artwork_image_uploadedBy_fk" CASCADE;
-ALTER TABLE public.artwork_image ADD CONSTRAINT "artwork_image_uploadedBy_fk" FOREIGN KEY ("uploadedBy")
+-- object: artwork_image_uploaded_by_fk | type: CONSTRAINT --
+-- ALTER TABLE public.artwork_image DROP CONSTRAINT IF EXISTS artwork_image_uploaded_by_fk CASCADE;
+ALTER TABLE public.artwork_image ADD CONSTRAINT artwork_image_uploaded_by_fk FOREIGN KEY (uploaded_by)
 REFERENCES public.person (id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
@@ -421,44 +419,44 @@ REFERENCES public.artwork (id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
 
--- object: "artist_artwork_artistId_fk" | type: CONSTRAINT --
--- ALTER TABLE public.artist_artwork DROP CONSTRAINT IF EXISTS "artist_artwork_artistId_fk" CASCADE;
-ALTER TABLE public.artist_artwork ADD CONSTRAINT "artist_artwork_artistId_fk" FOREIGN KEY ("artistId")
+-- object: artist_artwork_artist_id_fk | type: CONSTRAINT --
+-- ALTER TABLE public.artist_artwork DROP CONSTRAINT IF EXISTS artist_artwork_artist_id_fk CASCADE;
+ALTER TABLE public.artist_artwork ADD CONSTRAINT artist_artwork_artist_id_fk FOREIGN KEY (artist_id)
 REFERENCES public.person (id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
 
--- object: "artist_artwork_artworkId_fk" | type: CONSTRAINT --
--- ALTER TABLE public.artist_artwork DROP CONSTRAINT IF EXISTS "artist_artwork_artworkId_fk" CASCADE;
-ALTER TABLE public.artist_artwork ADD CONSTRAINT "artist_artwork_artworkId_fk" FOREIGN KEY ("artworkId")
+-- object: artist_artwork_artwork_id_fk | type: CONSTRAINT --
+-- ALTER TABLE public.artist_artwork DROP CONSTRAINT IF EXISTS artist_artwork_artwork_id_fk CASCADE;
+ALTER TABLE public.artist_artwork ADD CONSTRAINT artist_artwork_artwork_id_fk FOREIGN KEY (artwork_id)
 REFERENCES public.artwork (id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
 
--- object: "artwork_article_updatedBy_fk" | type: CONSTRAINT --
--- ALTER TABLE public.artwork_article DROP CONSTRAINT IF EXISTS "artwork_article_updatedBy_fk" CASCADE;
-ALTER TABLE public.artwork_article ADD CONSTRAINT "artwork_article_updatedBy_fk" FOREIGN KEY ("updatedBy")
+-- object: artwork_article_updated_by_fk | type: CONSTRAINT --
+-- ALTER TABLE public.artwork_article DROP CONSTRAINT IF EXISTS artwork_article_updated_by_fk CASCADE;
+ALTER TABLE public.artwork_article ADD CONSTRAINT artwork_article_updated_by_fk FOREIGN KEY (updated_by)
 REFERENCES public.person (id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
 
--- object: "artwork_article_artworkId_fk" | type: CONSTRAINT --
--- ALTER TABLE public.artwork_article DROP CONSTRAINT IF EXISTS "artwork_article_artworkId_fk" CASCADE;
-ALTER TABLE public.artwork_article ADD CONSTRAINT "artwork_article_artworkId_fk" FOREIGN KEY ("artworkId")
+-- object: artwork_article_artwork_id_fk | type: CONSTRAINT --
+-- ALTER TABLE public.artwork_article DROP CONSTRAINT IF EXISTS artwork_article_artwork_id_fk CASCADE;
+ALTER TABLE public.artwork_article ADD CONSTRAINT artwork_article_artwork_id_fk FOREIGN KEY (artwork_id)
 REFERENCES public.artwork (id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
 
--- object: "artwork_tag_artworkId_fk" | type: CONSTRAINT --
--- ALTER TABLE public.artwork_tag DROP CONSTRAINT IF EXISTS "artwork_tag_artworkId_fk" CASCADE;
-ALTER TABLE public.artwork_tag ADD CONSTRAINT "artwork_tag_artworkId_fk" FOREIGN KEY ("artworkId")
+-- object: artwork_tag_artwork_id_fk | type: CONSTRAINT --
+-- ALTER TABLE public.artwork_tag DROP CONSTRAINT IF EXISTS artwork_tag_artwork_id_fk CASCADE;
+ALTER TABLE public.artwork_tag ADD CONSTRAINT artwork_tag_artwork_id_fk FOREIGN KEY (artwork_id)
 REFERENCES public.artwork (id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
 
--- object: "artwork_tag_tagId_fk" | type: CONSTRAINT --
--- ALTER TABLE public.artwork_tag DROP CONSTRAINT IF EXISTS "artwork_tag_tagId_fk" CASCADE;
-ALTER TABLE public.artwork_tag ADD CONSTRAINT "artwork_tag_tagId_fk" FOREIGN KEY (tag)
+-- object: artwork_tag_tag_id_fk | type: CONSTRAINT --
+-- ALTER TABLE public.artwork_tag DROP CONSTRAINT IF EXISTS artwork_tag_tag_id_fk CASCADE;
+ALTER TABLE public.artwork_tag ADD CONSTRAINT artwork_tag_tag_id_fk FOREIGN KEY (tag)
 REFERENCES public.tag (tag) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
@@ -543,7 +541,7 @@ ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- object: "artist_artwork_flag_artistArtworkId_fk" | type: CONSTRAINT --
 -- ALTER TABLE public.artist_artwork_flag DROP CONSTRAINT IF EXISTS "artist_artwork_flag_artistArtworkId_fk" CASCADE;
 ALTER TABLE public.artist_artwork_flag ADD CONSTRAINT "artist_artwork_flag_artistArtworkId_fk" FOREIGN KEY ("artistId","artworkId")
-REFERENCES public.artist_artwork ("artistId","artworkId") MATCH FULL
+REFERENCES public.artist_artwork (artist_id,artwork_id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
 
@@ -578,7 +576,7 @@ ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- object: "artwork_tag_flag_artworkTag_fk" | type: CONSTRAINT --
 -- ALTER TABLE public.artwork_tag_flag DROP CONSTRAINT IF EXISTS "artwork_tag_flag_artworkTag_fk" CASCADE;
 ALTER TABLE public.artwork_tag_flag ADD CONSTRAINT "artwork_tag_flag_artworkTag_fk" FOREIGN KEY ("artworkId",tag)
-REFERENCES public.artwork_tag ("artworkId",tag) MATCH FULL
+REFERENCES public.artwork_tag (artwork_id,tag) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
 
