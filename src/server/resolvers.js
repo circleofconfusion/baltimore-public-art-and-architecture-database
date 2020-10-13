@@ -40,6 +40,11 @@ export const resolvers = {
       const { loaders } = context;
       const { imagesByArtworkIdsLoader } = loaders;
       return imagesByArtworkIdsLoader.load(artwork.id);
+    },
+    updatedBy(artwork, args, context) {
+      const { loaders } = context;
+      const { personsByIdsLoader } = loaders;
+      return personsByIdsLoader.load(artwork.updatedBy);
     }
   },
   Artist: {
@@ -47,6 +52,11 @@ export const resolvers = {
       const { loaders } = context;
       const { artworksByArtistIdsLoader } = loaders;
       return artworksByArtistIdsLoader.load(parent.id);
+    },
+    updatedBy(artist, args, context) {
+      const { loaders } = context;
+      const { personsByIdsLoader } = loaders;
+      return personsByIdsLoader.load(artist.updatedBy);
     }
   },
   Star: {
@@ -64,6 +74,20 @@ export const resolvers = {
         updatedBy: star.updatedBy,
         username: star.username
       }
+    }
+  },
+  Article: {
+    updatedBy(article, args, context) {
+      const { loaders } = context;
+      const { personsByIdsLoader } = loaders;
+      return personsByIdsLoader.load(article.updatedBy);
+    }
+  },
+  ArtworkImage: {
+    uploadedBy(artworkImage, args, context) {
+      const { loaders } = context;
+      const { personsByIdsLoader } = loaders;
+      return personsByIdsLoader.load(artworkImage.uploadedBy);
     }
   }
 }

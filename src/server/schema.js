@@ -10,8 +10,8 @@ export const schema = gql`
     imageUrl: String
     birthDate: String
     deathDate: String
-    updated: String
-    updatedBy: ID!
+    updated: String!
+    updatedBy: User!
   }
 
   type User implements Person {
@@ -23,8 +23,8 @@ export const schema = gql`
     imageUrl: String
     birthDate: String
     deathDate: String
-    updated: String
-    updatedBy: ID!
+    updated: String!
+    updatedBy: User!
     username: String!
   }
 
@@ -37,8 +37,8 @@ export const schema = gql`
     imageUrl: String
     birthDate: String
     deathDate: String
-    updated: String
-    updatedBy: ID!
+    updated: String!
+    updatedBy: User!
     bio: String
     website: String
     artworks: [Artwork]!
@@ -49,11 +49,11 @@ export const schema = gql`
     title: String
     description: String
     statement: String
-    longitude: Float
-    latitude: Float
+    longitude: Float!
+    latitude: Float!
     installationDate: String
-    updated: String
-    updatedBy: ID!
+    updated: String!
+    updatedBy: User!
     artists: [Artist]!
     stars: [Star]!
     articles: [Article]!
@@ -71,15 +71,15 @@ export const schema = gql`
     articleUrl: String
     articleTitle: String
     timestamp: String
-    updatedBy: ID!
+    updatedBy: User!
   }
 
   type ArtworkImage {
     id: ID!
     artworkId: ID!
-    imageUrl: String
-    timestamp: String
-    uploadedBy: String
+    imageUrl: String!
+    timestamp: String!
+    uploadedBy: User!
   }
 
   type Query {

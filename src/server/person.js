@@ -13,6 +13,23 @@ export async function getPersonById(id) {
   }
 }
 
+async function getPersonsByIds(ids) {
+  try {
+    const res = await query('SELECT * FROM person WHERE id = ANY($1)', [ids]);
+    const rows = humps.camelizeKeys(res.rows);
+    const rowsById = groupBy(p => p.id, rows);
+    const groupedRows = map(id => rowsById[id][0], ids);
+    return groupedRows;
+  } catch(err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+export function personsByIdsLoader() {
+  return new DataLoader(getPersonsByIds);
+}
+
 export async function getArtistsByArtworkIds(artworkIds) {
   try {
     const sql = 
