@@ -60,21 +60,7 @@ export const resolvers = {
     }
   },
   Star: {
-    user(star, args, context, info) {
-      return {
-        id: star.id,
-        firstName: star.firstName,
-        middleName: star.middleName,
-        lastName: star.lastName,
-        email: star.email,
-        imageUrl: star.imageUrl,
-        birthDate: star.birthDate,
-        deathDate: star.deathDate,
-        updated: star.updated,
-        updatedBy: star.updatedBy,
-        username: star.username
-      }
-    }
+    user: singleUser
   },
   Article: {
     updatedBy(article, args, context) {
@@ -89,5 +75,21 @@ export const resolvers = {
       const { personsByIdsLoader } = loaders;
       return personsByIdsLoader.load(artworkImage.uploadedBy);
     }
+  }
+}
+
+function singleUser(parent) {
+  return { // QUESTION: is this the better way since it'll never involve an extra query?
+    id: parent.id,
+    firstName: parent.firstName,
+    middleName: parent.middleName,
+    lastName: parent.lastName,
+    email: parent.email,
+    imageUrl: parent.imageUrl,
+    birthDate: parent.birthDate,
+    deathDate: parent.deathDate,
+    updated: parent.updated,
+    updatedBy: parent.updatedBy,
+    username: parent.username
   }
 }

@@ -5,7 +5,9 @@ import humps from 'humps';
 
 export async function getPersonById(id) {
   try {
-    const res = await query('SELECT * FROM person WHERE id = $1', [id]);
+    const sql = `
+    'SELECT * FROM person WHERE id = $1'`;
+    const res = await query(sql, [id]);
     return humps.camelizeKeys(res.rows[0]);
   } catch(err) {
     console.error(err);
