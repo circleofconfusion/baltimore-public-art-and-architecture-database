@@ -90,4 +90,17 @@ export const schema = gql`
     artworks: [Artwork]!
     artwork(id: ID!): Artwork
   }
+
+  type Mutation {
+    createArtwork(artworkInput: ArtworkInput): Artwork
+  }
+
+  input ArtworkInput {
+    title: String!
+    description: String
+    statement: String
+    longitude: Float!
+    latitude: Float!
+    installationDate: String
+  }
 `;

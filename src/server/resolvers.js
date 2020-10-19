@@ -1,5 +1,5 @@
 import { getPersonById, getArtistsByArtworkIds, getAllArtists, artistsByArtworkIdsLoader } from './person.js';
-import { getArtworkById, getAllArtworks } from './artwork.js';
+import { getArtworkById, getAllArtworks, createArtwork } from './artwork.js';
 export const resolvers = {
   Query: {
     user(parent, args, context) {
@@ -18,6 +18,12 @@ export const resolvers = {
     },
     artists() {
       return getAllArtists();
+    }
+  },
+  Mutation: {
+    createArtwork(root, args) {
+      const { artworkInput } = args;
+      return createArtwork(artworkInput);
     }
   },
   Artwork: {
@@ -41,10 +47,10 @@ export const resolvers = {
       const { imagesByArtworkIdsLoader } = loaders;
       return imagesByArtworkIdsLoader.load(artwork.id);
     },
-    updatedBy(artwork, args, context) {
+    updatedBy(artwork, args, context) {  // why this no work when returning a mutation?
       const { loaders } = context;
       const { personsByIdsLoader } = loaders;
-      return personsByIdsLoader.load(artwork.updatedBy);
+      return personsByIdsLoader.load(artwork.updated_by);
     }
   },
   Artist: {

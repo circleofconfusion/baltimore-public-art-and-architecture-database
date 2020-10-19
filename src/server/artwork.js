@@ -115,3 +115,21 @@ async function getImagesByArtworkIds(artworkIds) {
 export function imagesByArtworkIdsLoader() {
   return new DataLoader(getImagesByArtworkIds);
 }
+
+export async function createArtwork(artworkInput) {
+  const { title, description, statement, longitude, latitude, installation_date} = artworkInput;
+  const updated_by = 1; // TODO: Base this on a JWT found in the context object.
+  const sql = `
+    INSERT INTO artwork
+    (title, description, statement, location, installation_date, updated_by)
+    VALUES($1, $2, $3, ST_SetSRID(ST_MakePoint($4, $5), 4326), $6, $7)
+    RETURNING *`;
+  const params = [ title, description, statement, longitude, latitude, installation_date, updated_by ];
+  try {
+    const result = await query(sql, params);
+    return result.rows[0];
+  } catch(err) {
+    console.error(err);
+    throw err;
+  }
+}
