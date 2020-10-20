@@ -123,11 +123,11 @@ export async function createArtwork(artworkInput) {
     INSERT INTO artwork
     (title, description, statement, location, installation_date, updated_by)
     VALUES($1, $2, $3, ST_SetSRID(ST_MakePoint($4, $5), 4326), $6, $7)
-    RETURNING *`;
+    RETURNING id, title, description, statement, ST_X(location::geometry) as longitude, ST_Y(location::geometry) as latitude, installation_date, updated, updated_by`;
   const params = [ title, description, statement, longitude, latitude, installation_date, updated_by ];
   try {
     const result = await query(sql, params);
-    return result.rows[0];
+    return humps.camelizeKeys(result.rows[0]);
   } catch(err) {
     console.error(err);
     throw err;

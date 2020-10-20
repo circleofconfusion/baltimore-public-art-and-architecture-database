@@ -47,10 +47,10 @@ export const resolvers = {
       const { imagesByArtworkIdsLoader } = loaders;
       return imagesByArtworkIdsLoader.load(artwork.id);
     },
-    updatedBy(artwork, args, context) {  // why this no work when returning a mutation?
+    updatedBy(artwork, args, context) {
       const { loaders } = context;
       const { personsByIdsLoader } = loaders;
-      return personsByIdsLoader.load(artwork.updated_by);
+      return personsByIdsLoader.load(artwork.updatedBy);
     }
   },
   Artist: {
