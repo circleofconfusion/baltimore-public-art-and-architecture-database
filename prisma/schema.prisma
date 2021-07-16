@@ -1,0 +1,277 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model artist_artwork {
+  artist_id           Int
+  artwork_id          Int
+  person              person                @relation(fields: [artist_id], references: [id])
+  artwork             artwork               @relation(fields: [artwork_id], references: [id])
+  artist_artwork_flag artist_artwork_flag[]
+
+  @@id([artist_id, artwork_id])
+}
+
+model artist_artwork_flag {
+  flagId         Int
+  artistId       Int
+  artworkId      Int
+  artist_artwork artist_artwork @relation(fields: [artistId, artworkId], references: [artist_id, artwork_id])
+  flag           flag           @relation(fields: [flagId], references: [id])
+
+  @@id([flagId, artistId, artworkId])
+}
+
+model artist_tag {
+  artist_id           Int
+  tag                 String @db.VarChar(64)
+  person              person @relation(fields: [artist_id], references: [id])
+  tag_artist_tagTotag tag    @relation(fields: [tag], references: [tag])
+
+  @@id([artist_id, tag])
+}
+
+model artwork {
+  id                Int                      @id @default(autoincrement())
+  title             String                   @db.VarChar(128)
+  description       String?
+  statement         String?
+  location          Unsupported("geography")
+  installation_date DateTime?                @db.Date
+  updated           DateTime                 @default(now()) @db.Timestamp(6)
+  updated_by        Int
+  person            person                   @relation(fields: [updated_by], references: [id])
+  artist_artwork    artist_artwork[]
+  artwork_article   artwork_article[]
+  artwork_flag      artwork_flag[]
+  artwork_image     artwork_image[]
+  artwork_star      artwork_star[]
+  artwork_tag       artwork_tag[]
+  tour_artwork      tour_artwork[]
+}
+
+model artwork_article {
+  id                   Int                    @id @default(autoincrement())
+  artwork_id           Int
+  article_url          String?                @db.VarChar(512)
+  article_title        String?                @db.VarChar(256)
+  timestamp            DateTime?              @default(now()) @db.Timestamp(6)
+  updated_by           Int
+  artwork              artwork                @relation(fields: [artwork_id], references: [id])
+  person               person                 @relation(fields: [updated_by], references: [id])
+  artwork_article_flag artwork_article_flag[]
+}
+
+model artwork_article_flag {
+  flagId           Int
+  artworkArticleId Int
+  artwork_article  artwork_article @relation(fields: [artworkArticleId], references: [id])
+  flag             flag            @relation(fields: [flagId], references: [id])
+
+  @@id([flagId, artworkArticleId])
+}
+
+model artwork_flag {
+  flagId    Int
+  artworkId Int
+  artwork   artwork @relation(fields: [artworkId], references: [id])
+  flag      flag    @relation(fields: [flagId], references: [id])
+
+  @@id([flagId, artworkId])
+}
+
+model artwork_image {
+  id                 Int                  @id @default(autoincrement())
+  artwork_id         Int
+  image_url          String?              @db.VarChar(512)
+  timestamp          DateTime             @default(now()) @db.Timestamp(6)
+  uploaded_by        Int
+  artwork            artwork              @relation(fields: [artwork_id], references: [id])
+  person             person               @relation(fields: [uploaded_by], references: [id])
+  artwork_image_flag artwork_image_flag[]
+}
+
+model artwork_image_flag {
+  flagId         Int
+  artworkImageId Int
+  artwork_image  artwork_image @relation(fields: [artworkImageId], references: [id])
+  flag           flag          @relation(fields: [flagId], references: [id])
+
+  @@id([flagId, artworkImageId])
+}
+
+model artwork_star {
+  person_id  Int
+  artwork_id Int
+  timestamp  DateTime @default(now()) @db.Timestamp(6)
+  artwork    artwork  @relation(fields: [artwork_id], references: [id])
+  person     person   @relation(fields: [person_id], references: [id])
+
+  @@id([person_id, artwork_id])
+}
+
+model artwork_tag {
+  artwork_id           Int
+  tag                  String             @db.VarChar(64)
+  artwork              artwork            @relation(fields: [artwork_id], references: [id])
+  tag_artwork_tagTotag tag                @relation(fields: [tag], references: [tag])
+  artwork_tag_flag     artwork_tag_flag[]
+
+  @@id([artwork_id, tag])
+}
+
+model artwork_tag_flag {
+  flagId      Int
+  artworkId   Int
+  tag         String      @db.VarChar(64)
+  artwork_tag artwork_tag @relation(fields: [artworkId, tag], references: [artwork_id, tag])
+  flag        flag        @relation(fields: [flagId], references: [id])
+
+  @@id([flagId, artworkId, tag])
+}
+
+model flag {
+  id                             Int                    @id @default(autoincrement())
+  flagTimestamp                  DateTime               @default(now()) @db.Timestamp(6)
+  comment                        String?                @db.VarChar(1024)
+  flaggedBy                      Int
+  reviewedBy                     Int?
+  reviewTimestamp                DateTime?              @db.Timestamp(6)
+  review_adjudication            adjudication?
+  person_flag_flaggedByToperson  person                 @relation("flag_flaggedByToperson", fields: [flaggedBy], references: [id])
+  person_flag_reviewedByToperson person?                @relation("flag_reviewedByToperson", fields: [reviewedBy], references: [id])
+  artist_artwork_flag            artist_artwork_flag[]
+  artwork_article_flag           artwork_article_flag[]
+  artwork_flag                   artwork_flag[]
+  artwork_image_flag             artwork_image_flag[]
+  artwork_tag_flag               artwork_tag_flag[]
+  person_flag                    person_flag[]
+  tag_flag                       tag_flag[]
+  tour_flag                      tour_flag[]
+}
+
+model following {
+  followerId                           Int
+  followingId                          Int
+  person_following_followerIdToperson  person @relation("following_followerIdToperson", fields: [followerId], references: [id])
+  person_following_followingIdToperson person @relation("following_followingIdToperson", fields: [followingId], references: [id])
+
+  @@id([followerId, followingId])
+}
+
+model person {
+  id                                      Int               @id @default(autoincrement())
+  first_name                              String?           @db.VarChar(64)
+  middle_name                             String?           @db.VarChar(128)
+  last_name                               String?           @db.VarChar(64)
+  email                                   String?           @db.VarChar(128)
+  image_url                               String?           @db.VarChar(512)
+  birth_date                              DateTime?         @db.Date
+  death_date                              DateTime?         @db.Date
+  username                                String?           @db.VarChar(32)
+  bio                                     String?
+  website                                 String?           @db.VarChar(512)
+  updated                                 DateTime?         @default(now()) @db.Timestamp(6)
+  updated_by                              Int?
+  person                                  person?           @relation("personToperson_updated_by", fields: [updated_by], references: [id])
+  artist_artwork                          artist_artwork[]
+  artist_tag                              artist_tag[]
+  artwork                                 artwork[]
+  artwork_article                         artwork_article[]
+  artwork_image                           artwork_image[]
+  artwork_star                            artwork_star[]
+  flag_flag_flaggedByToperson             flag[]            @relation("flag_flaggedByToperson")
+  flag_flag_reviewedByToperson            flag[]            @relation("flag_reviewedByToperson")
+  following_following_followerIdToperson  following[]       @relation("following_followerIdToperson")
+  following_following_followingIdToperson following[]       @relation("following_followingIdToperson")
+  other_person                            person[]          @relation("personToperson_updated_by")
+  person_flag                             person_flag[]
+  tour_personTotour_createdById           tour[]            @relation("personTotour_createdById")
+  tour_personTotour_updatedBy             tour[]            @relation("personTotour_updatedBy")
+}
+
+model person_flag {
+  flagId   Int
+  personId Int
+  flag     flag   @relation(fields: [flagId], references: [id])
+  person   person @relation(fields: [personId], references: [id])
+
+  @@id([flagId, personId])
+}
+
+model spatial_ref_sys {
+  srid      Int     @id
+  auth_name String? @db.VarChar(256)
+  auth_srid Int?
+  srtext    String? @db.VarChar(2048)
+  proj4text String? @db.VarChar(2048)
+}
+
+model tag {
+  tag         String        @id @db.VarChar(64)
+  artist_tag  artist_tag[]
+  artwork_tag artwork_tag[]
+  tag_flag    tag_flag[]
+}
+
+model tag_flag {
+  flagId            Int
+  tag               String @db.VarChar(64)
+  flag              flag   @relation(fields: [flagId], references: [id])
+  tag_tagTotag_flag tag    @relation(fields: [tag], references: [tag])
+
+  @@id([flagId, tag])
+}
+
+model tour {
+  id                              Int            @id @default(autoincrement())
+  title                           String         @db.VarChar(128)
+  description                     String?
+  createdById                     Int
+  updated                         DateTime       @default(now()) @db.Timestamp(6)
+  updatedBy                       Int
+  person_personTotour_createdById person         @relation("personTotour_createdById", fields: [createdById], references: [id])
+  person_personTotour_updatedBy   person         @relation("personTotour_updatedBy", fields: [updatedBy], references: [id])
+  tour_artwork                    tour_artwork[]
+  tour_flag                       tour_flag[]
+}
+
+model tour_artwork {
+  tourId    Int
+  artworkId Int
+  order     Int?
+  artwork   artwork @relation(fields: [artworkId], references: [id])
+  tour      tour    @relation(fields: [tourId], references: [id])
+
+  @@id([tourId, artworkId])
+}
+
+model tour_flag {
+  flagId Int
+  tourId Int
+  flag   flag @relation(fields: [flagId], references: [id])
+  tour   tour @relation(fields: [tourId], references: [id])
+
+  @@id([flagId, tourId])
+}
+
+enum adjudication {
+  remove
+  keep
+}
+
+enum flag_type {
+  new
+  offensive
+  off_topic
+  incorrect
+  spam
+  not_public
+  dead_link
+  removed
+}

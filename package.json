@@ -12,6 +12,7 @@
   "author": "Shane Knudsen",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^2.27.0",
     "apollo-server": "^2.18.1",
     "dataloader": "^2.0.0",
     "dotenv": "^8.2.0",
@@ -19,5 +20,8 @@
     "humps": "^2.0.1",
     "pg": "^8.4.0",
     "ramda": "^0.27.1"
+  },
+  "devDependencies": {
+    "prisma": "^2.27.0"
   }
 }
